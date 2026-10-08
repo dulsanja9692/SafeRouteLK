@@ -1,7 +1,9 @@
+
 name: saferoute_lk
 description: SafeRouteLK - Community Safety App
 
 publish_to: 'none'
+
 version: 1.0.0+1
 
 environment:
@@ -10,6 +12,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+
   flutter_map: ^7.0.2
   latlong2: ^0.9.1
   cupertino_icons: ^1.0.8
@@ -17,12 +20,21 @@ dependencies:
   cloud_firestore: ^5.0.0
   geolocator: ^13.0.2
 
+  # Bluetooth Beacon
+  flutter_blue_plus: ^1.36.8
+
+  # Bluetooth Alert Sound
+  audioplayers: ^6.1.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
   flutter_lints: ^4.0.0
 
 flutter:
   uses-material-design: true
+
   assets:
     - assets/saferoute_data.json
+    - assets/sounds/alert.mp3
