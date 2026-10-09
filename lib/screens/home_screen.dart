@@ -6,6 +6,7 @@ import 'safe_spots_screen.dart';
 import 'portal_screen.dart';
 import 'login_screen.dart';
 import 'bluetooth_beacon_screen.dart';
+import '../models/incident_store.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -193,13 +194,19 @@ class HomeScreen extends StatelessWidget {
               const Text('NETWORK STATUS', style: TextStyle(color: Color(0xFF4A5568), fontSize: 11, letterSpacing: 3, fontWeight: FontWeight.bold)),
             ]),
             const SizedBox(height: 14),
-            const Row(children: [
-              Expanded(child: _StatCard(value: '76', label: 'DANGER\nZONES', color: Color(0xFFFF4444))),
-              SizedBox(width: 10),
-              Expanded(child: _StatCard(value: '15', label: 'SAFE\nSPOTS', color: Color(0xFF00FF88))),
-              SizedBox(width: 10),
-              Expanded(child: _StatCard(value: '9', label: 'PROVINCES\nCOVERED', color: Color(0xFF00D4FF))),
-            ]),
+            ListenableBuilder(
+              listenable: IncidentStore(),
+              builder: (context, _) {
+                final store = IncidentStore();
+                return Row(children: [
+                  Expanded(child: _StatCard(value: '${store.dangers.length}', label: 'DANGER\nZONES', color: const Color(0xFFFF4444))),
+                  const SizedBox(width: 10),
+                  Expanded(child: _StatCard(value: '${store.safeSpots.length}', label: 'SAFE\nSPOTS', color: const Color(0xFF00FF88))),
+                  const SizedBox(width: 10),
+                  const Expanded(child: _StatCard(value: '9', label: 'PROVINCES\nCOVERED', color: Color(0xFF00D4FF))),
+                ]);
+              }
+            ),
             const SizedBox(height: 20),
           ],
         ),
