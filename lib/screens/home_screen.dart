@@ -1,14 +1,40 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'heatmap_screen.dart';
 import 'report_screen.dart';
 import 'safe_spots_screen.dart';
 import 'portal_screen.dart';
+import 'login_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
+  Future<void> _logout(BuildContext context) async {
+    await FirebaseAuth.instance.signOut();
+    if (context.mounted) {
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (_) => const LoginScreen()),
+        (_) => false,
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final user = FirebaseAuth.instance.currentUser;
+    final name = user?.displayName ?? user?.email ?? 'User';
+    
+    // Calculate initials (e.g. Sanjana Nuwanthi -> SN)
+    String initials = '';
+    if (name.isNotEmpty) {
+      List<String> nameParts = name.trim().split(RegExp(r'\s+'));
+      initials += nameParts[0][0].toUpperCase();
+      if (nameParts.length > 1) {
+        initials += nameParts[1][0].toUpperCase();
+      }
+    }
+
     return Scaffold(
       backgroundColor: const Color(0xFF050A0E),
       appBar: AppBar(
@@ -29,6 +55,14 @@ class HomeScreen extends StatelessWidget {
               style: TextStyle(fontSize: 14, letterSpacing: 4,
                   color: Color(0xFFE2E8F0), fontWeight: FontWeight.w600)),
         ]),
+        actions: [
+          TextButton.icon(
+            icon: const Icon(Icons.logout, color: Color(0xFFFF4444), size: 16),
+            label: const Text('SIGN OUT', style: TextStyle(color: Color(0xFFFF4444), fontSize: 11, letterSpacing: 1, fontWeight: FontWeight.bold)),
+            onPressed: () => _logout(context),
+          ),
+          const SizedBox(width: 8),
+        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
@@ -53,17 +87,19 @@ class HomeScreen extends StatelessWidget {
                     border: Border.all(color: const Color(0xFF00FF88), width: 1.5),
                     color: const Color(0xFF00FF88).withAlpha(15),
                   ),
-                  child: const Icon(Icons.person_outlined, color: Color(0xFF00FF88), size: 24),
+                  child: Center(
+                    child: Text(initials, style: const TextStyle(color: Color(0xFF00FF88), fontSize: 18, fontWeight: FontWeight.bold, letterSpacing: 1)),
+                  ),
                 ),
                 const SizedBox(width: 14),
-                const Expanded(child: Column(
+                Expanded(child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('WELCOME BACK', style: TextStyle(color: Color(0xFF4A5568), fontSize: 10, letterSpacing: 2)),
-                    SizedBox(height: 4),
-                    Text('Citizen User', style: TextStyle(color: Color(0xFFE2E8F0), fontSize: 15, fontWeight: FontWeight.bold)),
-                    SizedBox(height: 2),
-                    Text('Stay safe. Stay informed.', style: TextStyle(color: Color(0xFF4A5568), fontSize: 12)),
+                    const Text('WELCOME BACK', style: TextStyle(color: Color(0xFF4A5568), fontSize: 10, letterSpacing: 2)),
+                    const SizedBox(height: 4),
+                    Text(name, style: const TextStyle(color: Color(0xFFE2E8F0), fontSize: 15, fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 2),
+                    const Text('Stay safe. Stay informed.', style: TextStyle(color: Color(0xFF4A5568), fontSize: 12)),
                   ],
                 )),
                 Container(width: 8, height: 8, decoration: const BoxDecoration(shape: BoxShape.circle, color: Color(0xFF00FF88))),
@@ -90,10 +126,10 @@ class HomeScreen extends StatelessWidget {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     backgroundColor: const Color(0xFF0D1117),
-                    content: Row(children: [
-                      const Icon(Icons.info_outline, color: Color(0xFF00D4FF), size: 16),
-                      const SizedBox(width: 8),
-                      const Text('AR Navigation — Coming soon', style: TextStyle(color: Color(0xFF00D4FF))),
+                    content: const Row(children: [
+                      Icon(Icons.info_outline, color: Color(0xFF00D4FF), size: 16),
+                      SizedBox(width: 8),
+                      Text('AR Navigation — Coming soon', style: TextStyle(color: Color(0xFF00D4FF))),
                     ]),
                     behavior: SnackBarBehavior.floating,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
@@ -112,10 +148,10 @@ class HomeScreen extends StatelessWidget {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     backgroundColor: const Color(0xFF0D1117),
-                    content: Row(children: [
-                      const Icon(Icons.info_outline, color: Color(0xFFFF8C00), size: 16),
-                      const SizedBox(width: 8),
-                      const Text('AI Call Assist — Coming soon', style: TextStyle(color: Color(0xFFFF8C00))),
+                    content: const Row(children: [
+                      Icon(Icons.info_outline, color: Color(0xFFFF8C00), size: 16),
+                      SizedBox(width: 8),
+                      Text('AI Call Assist — Coming soon', style: TextStyle(color: Color(0xFFFF8C00))),
                     ]),
                     behavior: SnackBarBehavior.floating,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
@@ -134,10 +170,10 @@ class HomeScreen extends StatelessWidget {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     backgroundColor: const Color(0xFF0D1117),
-                    content: Row(children: [
-                      const Icon(Icons.info_outline, color: Color(0xFF7C3AED), size: 16),
-                      const SizedBox(width: 8),
-                      const Text('Bluetooth Beacon — Coming soon', style: TextStyle(color: Color(0xFF7C3AED))),
+                    content: const Row(children: [
+                      Icon(Icons.info_outline, color: Color(0xFF7C3AED), size: 16),
+                      SizedBox(width: 8),
+                      Text('Bluetooth Beacon — Coming soon', style: TextStyle(color: Color(0xFF7C3AED))),
                     ]),
                     behavior: SnackBarBehavior.floating,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
@@ -270,7 +306,7 @@ class _StatCard extends StatelessWidget {
 }
 
 class _CrowdReportingNav extends StatefulWidget {
-  const _CrowdReportingNav({super.key});
+  const _CrowdReportingNav();
   @override
   State<_CrowdReportingNav> createState() => _CrowdReportingNavState();
 }

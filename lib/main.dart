@@ -2,11 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'models/incident_store.dart';
-import 'screens/report_screen.dart';
-import 'screens/portal_screen.dart';
-import 'screens/heatmap_screen.dart';
-import 'screens/safe_spots_screen.dart';
 import 'screens/home_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'screens/login_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -41,7 +39,18 @@ class SafeRouteLKApp extends StatelessWidget {
         useMaterial3: true,
         fontFamily: 'monospace',
       ),
-      home: const SplashScreen(),
+      home: StreamBuilder<User?>(
+        stream: FirebaseAuth.instance.authStateChanges(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const SplashScreen();
+          }
+          if (snapshot.hasData) {
+            return const HomeScreen();
+          }
+          return const LoginScreen();
+        },
+      ),
     );
   }
 }
@@ -81,7 +90,13 @@ class _SplashScreenState extends State<SplashScreen>
     if (mounted) {
       Navigator.of(context).pushReplacement(
         PageRouteBuilder(
-          pageBuilder: (_, __, ___) => const HomeScreen(),
+          pageBuilder: (_, __, ___) => StreamBuilder<User?>(
+            stream: FirebaseAuth.instance.authStateChanges(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) return const HomeScreen();
+              return const LoginScreen();
+            },
+          ),
           transitionsBuilder: (_, anim, __, child) =>
               FadeTransition(opacity: anim, child: child),
           transitionDuration: const Duration(milliseconds: 600),
@@ -177,4 +192,4 @@ class _SplashScreenState extends State<SplashScreen>
     );
   }
 }
-
+
