@@ -5,6 +5,7 @@ import 'report_screen.dart';
 import 'safe_spots_screen.dart';
 import 'portal_screen.dart';
 import 'login_screen.dart';
+import 'bluetooth_beacon_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -166,20 +167,10 @@ class HomeScreen extends StatelessWidget {
               subtitle: 'Device theft prevention and tracking system',
               accentColor: const Color(0xFF7C3AED),
               stats: 'OBJECTIVE 3',
-              onTap: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    backgroundColor: const Color(0xFF0D1117),
-                    content: const Row(children: [
-                      Icon(Icons.info_outline, color: Color(0xFF7C3AED), size: 16),
-                      SizedBox(width: 8),
-                      Text('Bluetooth Beacon — Coming soon', style: TextStyle(color: Color(0xFF7C3AED))),
-                    ]),
-                    behavior: SnackBarBehavior.floating,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                  ),
-                );
-              },
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const BluetoothBeaconScreen()),
+              ),
             ),
             const SizedBox(height: 14),
             _FeatureCard(
