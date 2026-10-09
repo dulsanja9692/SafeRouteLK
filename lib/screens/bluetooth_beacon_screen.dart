@@ -6,42 +6,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 
-void main() {
-  WidgetsFlutterBinding.ensureInitialized();
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class BluetoothBeaconScreen extends StatefulWidget {
+  const BluetoothBeaconScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Beacon Guard',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        brightness: Brightness.dark,
-        fontFamily: 'Roboto',
-        scaffoldBackgroundColor: const Color(0xFF0B1020),
-        colorScheme: const ColorScheme.dark(
-          primary: Color(0xFF7C3AED),
-          secondary: Color(0xFF06B6D4),
-          surface: Color(0xFF151B2E),
-        ),
-      ),
-      home: const HomePage(),
-    );
-  }
+  State<BluetoothBeaconScreen> createState() => _BluetoothBeaconScreenState();
 }
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
-
-  @override
-  State<HomePage> createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
+class _BluetoothBeaconScreenState extends State<BluetoothBeaconScreen> {
   final List<ScanResult> _devices = [];
   final List<int> _rssiHistory = [];
 
@@ -162,7 +134,6 @@ class _HomePageState extends State<HomePage> {
       });
 
       await _selected!.device.connect(
-        license: License.free,
         timeout: const Duration(seconds: 10),
       );
 
