@@ -22,6 +22,9 @@
     <uses-permission
         android:name="android.permission.BLUETOOTH_CONNECT" />
 
+    <!-- Required on Android 11+ to launch the external SafeAR app by name -->
+    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
+
     <application
         android:label="saferoute_lk"
         android:name="${applicationName}"
