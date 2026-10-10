@@ -125,20 +125,27 @@ class HomeScreen extends StatelessWidget {
               subtitle: 'Augmented reality safety route guidance',
               accentColor: const Color(0xFF00D4FF),
               stats: 'OBJECTIVE 1',
-              onTap: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    backgroundColor: const Color(0xFF0D1117),
-                    content: const Row(children: [
-                      Icon(Icons.info_outline, color: Color(0xFF00D4FF), size: 16),
-                      SizedBox(width: 8),
-                      Text('AR Navigation — Coming soon', style: TextStyle(color: Color(0xFF00D4FF))),
-                    ]),
-                    behavior: SnackBarBehavior.floating,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                  ),
-                );
-              },
+              onTap: () async {
+                  try {
+                    const channel = MethodChannel('com.saferoute.lk/app_launcher');
+                    await channel.invokeMethod('launchAppByName', {'appName': 'SafeAR'});
+                  } catch (e) {
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          backgroundColor: const Color(0xFF0D1117),
+                          content: const Row(children: [
+                            Icon(Icons.error_outline, color: Color(0xFFFF4444), size: 16),
+                            SizedBox(width: 8),
+                            Text('SafeAR app is not installed', style: TextStyle(color: Color(0xFFFF4444))),
+                          ]),
+                          behavior: SnackBarBehavior.floating,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                        ),
+                      );
+                    }
+                  }
+                },
             ),
             const SizedBox(height: 14),
             _FeatureCard(
