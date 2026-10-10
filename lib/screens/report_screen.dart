@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:geocoding/geocoding.dart';
 import '../models/incident_store.dart';
 
 class ReportScreen extends StatefulWidget {
@@ -432,7 +433,7 @@ void _onMapTap(LatLng position) {
                           controller: _searchController,
                           style: const TextStyle(color: Colors.white, fontSize: 13),
                           decoration: const InputDecoration(
-                            hintText: 'Search Lat, Lng (e.g. 6.9, 79.8)',
+                            hintText: 'Search place (e.g. Colombo) or Lat, Lng',
                             hintStyle: TextStyle(color: Color(0xFF4A5568), fontSize: 12),
                             border: InputBorder.none,
                             contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
