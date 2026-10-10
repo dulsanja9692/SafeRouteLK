@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:geocoding/geocoding.dart';
 import '../models/incident_store.dart';
 
 class ReportScreen extends StatefulWidget {
@@ -90,13 +89,20 @@ final _searchController = TextEditingController();
       }
 
       final query = text.toLowerCase().contains('sri lanka') ? text : '$text, Sri Lanka';
-      final locations = await Geocoding().locationFromAddress(query);
-      if (locations.isNotEmpty) {
-        final loc = locations.first;
-        _moveToLocation(loc.latitude, loc.longitude);
-      } else {
-        throw Exception('Not found');
-      }
+      try {
+        final url = Uri.parse('https://nominatim.openstreetmap.org/search?q=${Uri.encodeComponent(query)}&format=json&limit=1');
+        final response = await http.get(url, headers: {'User-Agent': 'saferoute_lk/1.0'});
+        if (response.statusCode == 200) {
+          final List data = json.decode(response.body);
+          if (data.isNotEmpty) {
+            final lat = double.parse(data[0]['lat']);
+            final lng = double.parse(data[0]['lon']);
+            _moveToLocation(lat, lng);
+            return;
+          }
+        }
+      } catch (_) {}
+      throw Exception('Not found');
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
