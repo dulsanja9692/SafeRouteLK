@@ -88,7 +88,7 @@ final _searchController = TextEditingController();
       }
 
       final query = text.toLowerCase().contains('sri lanka') ? text : '$text, Sri Lanka';
-      final locations = await locationFromAddress(query);
+      final locations = await Geocoding().locationFromAddress(query);
       if (locations.isNotEmpty) {
         final loc = locations.first;
         _moveToLocation(loc.latitude, loc.longitude);
