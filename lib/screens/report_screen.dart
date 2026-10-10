@@ -71,33 +71,52 @@ final _searchController = TextEditingController();
   }
 
   
-  void _searchCoordinates() {
+  Future<void> _searchCoordinates() async {
     final text = _searchController.text.trim();
     if (text.isEmpty) return;
+    
     try {
       final cleanedText = text.replaceAll(RegExp(r'[^0-9\.,\-]'), '');
       final parts = cleanedText.split(RegExp(r'[,]+'));
-      if (parts.length >= 2) {
-        final lat = double.parse(parts[0]);
-        final lng = double.parse(parts[1]);
-        final newPos = LatLng(lat, lng);
-        setState(() {
-          _pickedLocation = newPos;
-          _userLocation = newPos;
-          _locationLabel = '°N, °E';
-          _locationPicked = true;
-        });
-        _mapController.move(newPos, 16);
-        FocusScope.of(context).unfocus();
+      if (parts.length >= 2 && text.contains(RegExp(r'\d'))) {
+        final lat = double.tryParse(parts[0]);
+        final lng = double.tryParse(parts[1]);
+        if (lat != null && lng != null && lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180) {
+          _moveToLocation(lat, lng);
+          return;
+        }
+      }
+
+      final query = text.toLowerCase().contains('sri lanka') ? text : '$text, Sri Lanka';
+      final locations = await locationFromAddress(query);
+      if (locations.isNotEmpty) {
+        final loc = locations.first;
+        _moveToLocation(loc.latitude, loc.longitude);
+      } else {
+        throw Exception('Not found');
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Invalid coordinates. Use format: lat, lng'),
-          backgroundColor: Color(0xFFFF4444),
-        ),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Could not find "$text". Try a different name.'),
+            backgroundColor: const Color(0xFFFF4444),
+          ),
+        );
+      }
     }
+  }
+
+  void _moveToLocation(double lat, double lng) {
+    final newPos = LatLng(lat, lng);
+    setState(() {
+      _pickedLocation = newPos;
+      _userLocation = newPos;
+      _locationLabel = '${lat.toStringAsFixed(4)}°N, ${lng.toStringAsFixed(4)}°E';
+      _locationPicked = true;
+    });
+    _mapController.move(newPos, 16);
+    FocusScope.of(context).unfocus();
   }
 void _onMapTap(LatLng position) {
     setState(() {
