@@ -14,7 +14,9 @@ class ReportScreen extends StatefulWidget {
 class _ReportScreenState extends State<ReportScreen> {
   final _formKey = GlobalKey<FormState>();
   final _descController = TextEditingController();
-  final _nameController = TextEditingController();
+final _searchController = TextEditingController();
+  final _mapController = MapController();
+    final _nameController = TextEditingController();
 
   String _selectedCategory = 'danger';
   String _selectedDangerType = 'Theft';
@@ -67,7 +69,35 @@ class _ReportScreenState extends State<ReportScreen> {
     return match['color'] as Color;
   }
 
-  void _onMapTap(LatLng position) {
+  
+  void _searchCoordinates() {
+    final text = _searchController.text.trim();
+    if (text.isEmpty) return;
+    try {
+      final parts = text.split(RegExp(r'[, ]+'));
+      if (parts.length >= 2) {
+        final lat = double.parse(parts[0]);
+        final lng = double.parse(parts[1]);
+        final newPos = LatLng(lat, lng);
+        setState(() {
+          _pickedLocation = newPos;
+          _userLocation = newPos;
+          _locationLabel = '°N, °E';
+          _locationPicked = true;
+        });
+        _mapController.move(newPos, 16);
+        FocusScope.of(context).unfocus();
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Invalid coordinates. Use format: lat, lng'),
+          backgroundColor: Color(0xFFFF4444),
+        ),
+      );
+    }
+  }
+void _onMapTap(LatLng position) {
     setState(() {
       _pickedLocation = position;
       _locationLabel =
@@ -153,9 +183,10 @@ class _ReportScreenState extends State<ReportScreen> {
             '${position.longitude.toStringAsFixed(4)}°E';
         _locationPicked = true;
         _gettingGps = false;
-      });
+        });
+        _mapController.move(gpsLatLng, 16);
 
-      debugPrint('📍 GPS Location: ${position.latitude}, ${position.longitude}');
+        debugPrint('📍 GPS Location: ${position.latitude}, ${position.longitude}');
     } catch (e) {
       debugPrint('❌ GPS Error: $e');
       if (mounted) {
@@ -239,7 +270,8 @@ class _ReportScreenState extends State<ReportScreen> {
       body: Stack(
         children: [
           FlutterMap(
-            options: MapOptions(
+              mapController: _mapController,
+              options: MapOptions(
               initialCenter: _userLocation ?? const LatLng(6.9271, 79.8612),
               initialZoom: _userLocation != null ? 16 : 14,
               onTap: (_, point) => _onMapTap(point),
@@ -382,6 +414,47 @@ class _ReportScreenState extends State<ReportScreen> {
                       ),
                     ),
                   ]),
+
+                const SizedBox(height: 10),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Container(
+                        height: 44,
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF0D1117).withAlpha(230),
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: const Color(0xFF4A5568).withAlpha(100)),
+                        ),
+                        child: TextField(
+                          controller: _searchController,
+                          style: const TextStyle(color: Colors.white, fontSize: 13),
+                          decoration: const InputDecoration(
+                            hintText: 'Search Lat, Lng (e.g. 6.9, 79.8)',
+                            hintStyle: TextStyle(color: Color(0xFF4A5568), fontSize: 12),
+                            border: InputBorder.none,
+                            contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                          ),
+                          onSubmitted: (_) => _searchCoordinates(),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    GestureDetector(
+                      onTap: _searchCoordinates,
+                      child: Container(
+                        height: 44,
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF00D4FF).withAlpha(20),
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: const Color(0xFF00D4FF).withAlpha(80)),
+                        ),
+                        child: const Icon(Icons.search, color: Color(0xFF00D4FF), size: 20),
+                      ),
+                    ),
+                  ],
+                ),
                 ),
               ),
             ]),
