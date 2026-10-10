@@ -124,7 +124,6 @@ class HomeScreen extends StatelessWidget {
               title: 'AR NAVIGATION',
               subtitle: 'Augmented reality safety route guidance',
               accentColor: const Color(0xFF00D4FF),
-              stats: 'OBJECTIVE 1',
               onTap: () async {
                   try {
                     const channel = MethodChannel('com.saferoute.lk/app_launcher');
@@ -153,7 +152,6 @@ class HomeScreen extends StatelessWidget {
               title: 'AI CALL ASSIST',
               subtitle: 'Real-time AI-powered emergency call assistant',
               accentColor: const Color(0xFFFF8C00),
-              stats: 'OBJECTIVE 2',
               onTap: () {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
@@ -175,7 +173,6 @@ class HomeScreen extends StatelessWidget {
               title: 'BLUETOOTH BEACON',
               subtitle: 'Device theft prevention and tracking system',
               accentColor: const Color(0xFF7C3AED),
-              stats: 'OBJECTIVE 3',
               onTap: () => Navigator.push(
                 context,
                 MaterialPageRoute(builder: (_) => const BluetoothBeaconScreen()),
@@ -187,7 +184,6 @@ class HomeScreen extends StatelessWidget {
               title: 'CROWD REPORTING',
               subtitle: 'Community safety heatmap, reports & safe spots',
               accentColor: const Color(0xFF00FF88),
-              stats: 'OBJECTIVE 4',
               onTap: () => Navigator.push(
                 context,
                 MaterialPageRoute(builder: (_) => const _CrowdReportingNav()),
@@ -228,14 +224,12 @@ class _FeatureCard extends StatelessWidget {
   final String title;
   final String subtitle;
   final Color accentColor;
-  final String stats;
   final VoidCallback onTap;
   const _FeatureCard({
     required this.icon,
     required this.title,
     required this.subtitle,
     required this.accentColor,
-    required this.stats,
     required this.onTap,
   });
   
@@ -268,16 +262,6 @@ class _FeatureCard extends StatelessWidget {
               Text(title, style: TextStyle(color: accentColor, fontSize: 13, fontWeight: FontWeight.bold, letterSpacing: 2)),
               const SizedBox(height: 4),
               Text(subtitle, style: const TextStyle(color: Color(0xFF4A5568), fontSize: 12)),
-              const SizedBox(height: 8),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                decoration: BoxDecoration(
-                  border: Border.all(color: accentColor.withAlpha(60)),
-                  borderRadius: BorderRadius.circular(4),
-                  color: accentColor.withAlpha(8),
-                ),
-                child: Text(stats, style: TextStyle(color: accentColor, fontSize: 9, letterSpacing: 1.5, fontWeight: FontWeight.bold)),
-              ),
             ],
           )),
           Icon(Icons.chevron_right, color: accentColor.withAlpha(150), size: 20),
