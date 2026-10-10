@@ -413,7 +413,8 @@ void _onMapTap(LatLng position) {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                  ]),
+                  ]),),
+              ),
 
                 const SizedBox(height: 10),
                 Row(
@@ -455,8 +456,7 @@ void _onMapTap(LatLng position) {
                     ),
                   ],
                 ),
-                ),
-              ),
+                
             ]),
           ),
 
