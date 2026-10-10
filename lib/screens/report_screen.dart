@@ -74,7 +74,8 @@ final _searchController = TextEditingController();
     final text = _searchController.text.trim();
     if (text.isEmpty) return;
     try {
-      final parts = text.split(RegExp(r'[, ]+'));
+      final cleanedText = text.replaceAll(RegExp(r'[^0-9\.,\-]'), '');
+      final parts = cleanedText.split(RegExp(r'[,]+'));
       if (parts.length >= 2) {
         final lat = double.parse(parts[0]);
         final lng = double.parse(parts[1]);
